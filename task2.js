@@ -1,0 +1,12 @@
+let a = 13.890123;
+let b = 2.891564;
+let n = 3;
+a = Math.floor(a % 1 * 10**n);
+b = Math.floor(b % 1 * 10**n);
+console.log(a,b);
+console.log(a>b);
+console.log(a<b);
+console.log(a>=b);
+console.log(a<=b);
+console.log(a===b);
+console.log(a!==b);

@@ -1,0 +1,11 @@
+let n = -3;
+let m = -10;
+let a = Math.round(Math.random() * (m-n))+ n;
+let b = Math.round(Math.random() * (m-n))+ n;
+console.log(a,b);
+console.log(a>b);
+console.log(a<b);
+console.log(a>=b);
+console.log(a<=b);
+console.log(a===b);
+console.log(a!==b);
