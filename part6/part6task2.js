@@ -15,4 +15,6 @@ let objects = [
     { name: 'Пётр', surname: 'Петров' }
    ]
 let result = filter(objects, 'name', 'Иван');
+let res = objects.filter(el => el.name === "Иван"); 
 console.log(result);
+console.log(res);

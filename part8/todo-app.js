@@ -18,64 +18,22 @@
                     name: item.name,
                     done: item.done,
                     id : item.id
-                });
+                },key,itemArr);
                 if (todoItem.itemObject.done){
                     todoItem.itemObject.item.classList.toggle('list-group-item-success');
                 }
-                todoItem.doneButton.addEventListener('click', function() {
-                    if (todoItem.itemObject.done === false){
-                        todoItem.itemObject.done = true;
-                        for (item of itemArr){
-                            if (item.name === todoItem.itemObject.item.textContent.substring(0,item.name.length)){
-                                item.done = true;
-                                addToLocalStorage(key,itemArr);
-                                break;
-                            }
-                        }
-                    }
-                    else{
-                        todoItem.itemObject.done = false;
-                        for (item of itemArr){
-                            if (item.name === todoItem.itemObject.item.textContent.substring(0,item.name.length)){
-                                item.done = false;
-                                addToLocalStorage(key,itemArr);
-                                break;
-                            }
-                        }
-                    }
-                    todoItem.itemObject.item.classList.toggle('list-group-item-success');
-                });
-    
-    
-                todoItem.deleteButton.addEventListener('click', function() {
-                    if (confirm('Вы уверены?')) {
-                        todoItem.itemObject.item.remove();
-                        for (item in itemArr) {
-                            if (todoItem.itemObject.id === itemArr[item].id) { 
-                                itemArr.splice(item,1);
-                                addToLocalStorage(key,itemArr);
-                                break;
-                            }
-                        }
-                    }
-                });
                 todoList.append(todoItem.itemObject.item);
             }
         }
     }
 
     function getId(itemArr){
-        if (itemArr === null || itemArr.length === 0){
+        if (!itemArr?.length){
             return 0;
         }
-
-        let maxId = -1;
-        for (item of itemArr){
-            if (item.id > maxId){
-                maxId = item.id;
-            }
-        }
-        return maxId + 1;
+        itemArr.sort((a, b) => a.id < b.id ? 1 : -1);
+        console.log(itemArr)
+        return itemArr[0].id + 1;
     }
 
     function createAppTitle(title) {
@@ -116,7 +74,7 @@
         return list;
     }
 
-    function createTodoItem(taskItem) {
+    function createTodoItem(taskItem, listName, itemArr) {
         let itemObject = {
             item : document.createElement('li'),
             done : taskItem.done,
@@ -138,6 +96,22 @@
         buttonGroup.append(doneButton);
         buttonGroup.append(deleteButton);
         itemObject.item.append(buttonGroup);
+        
+        doneButton.addEventListener('click', function() {
+            itemObject.done = !itemObject.done;
+            itemArr.find((elem) => elem.name === itemObject.item.textContent.substring(0,elem.name.length)).done = !itemArr.find((elem) => elem.name === itemObject.item.textContent.substring(0,elem.name.length)).done;
+            addToLocalStorage(listName,itemArr);
+            itemObject.item.classList.toggle('list-group-item-success');
+        });
+
+
+        deleteButton.addEventListener('click', function() {
+            if (confirm('Вы уверены?')) {
+                itemObject.item.remove();
+                itemArr.splice(itemArr.findIndex((elem)=>elem.id === itemObject.id),1);
+                addToLocalStorage(listName,itemArr);
+            }
+        });
 
         return {
             itemObject,
@@ -176,46 +150,7 @@
                 name: todoItemForm.input.value,
                 done: false,
                 id : count
-            });
-    
-            todoItem.doneButton.addEventListener('click', function() {
-                if (todoItem.itemObject.done === false){
-                    todoItem.itemObject.done = true;
-                    for (item of itemArr){
-                        if (item.name === todoItem.itemObject.item.textContent.substring(0,item.name.length)){
-                            item.done = true;
-                            addToLocalStorage(listName,itemArr);
-                            break;
-                        }
-                    }
-                }
-                else{
-                    todoItem.itemObject.done = false;
-                    for (item of itemArr){
-                        if (item.name === todoItem.itemObject.item.textContent.substring(0,item.name.length)){
-                            item.done = false;
-                            addToLocalStorage(listName,itemArr);
-                            break;
-                        }
-                    }
-                }
-                todoItem.itemObject.item.classList.toggle('list-group-item-success');
-            });
-
-
-            todoItem.deleteButton.addEventListener('click', function() {
-                if (confirm('Вы уверены?')) {
-                    todoItem.itemObject.item.remove();
-                    for (item in itemArr) {
-                        if (todoItem.itemObject.id === itemArr[item].id) { 
-                            itemArr.splice(item,1);
-                            addToLocalStorage(listName,itemArr);
-                            break;
-                        }
-                    }
-                }
-            });
-
+            },listName,itemArr);
             itemArr.push({
                 id: count,
                 name : todoItemForm.input.value,
